@@ -6,7 +6,7 @@ use Illuminate\Database\Schema\Blueprint;
 use ZnCore\Db\Migration\Base\BaseCreateTableMigration;
 use ZnCore\Db\Migration\Enums\ForeignActionEnum;
 
-class m140506_102140_create_auth_assignment_table extends BaseCreateTableMigration
+class m_2014_05_06_102140_create_auth_assignment_table extends BaseCreateTableMigration
 {
 
     protected $tableName = 'auth_assignment';
