@@ -17,7 +17,7 @@ class m_2014_05_06_102140_create_auth_assignment_table extends BaseCreateTableMi
         return function (Blueprint $table) {
             $table->string('item_name', 64)->comment('');
             $table->string('user_id', 64)->comment('');
-            $table->integer('updated_at')->nullable()->comment('');
+            $table->integer('created_at')->nullable()->comment('');
 
             $table->primary(['item_name', 'user_id']);
             $table->index('user_id');
