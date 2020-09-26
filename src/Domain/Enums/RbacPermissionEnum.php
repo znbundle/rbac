@@ -2,7 +2,9 @@
 
 namespace ZnBundle\Rbac\Domain\Enums;
 
-class RbacPermissionEnum
+use ZnCore\Base\Interfaces\GetLabelsInterface;
+
+class RbacPermissionEnum implements GetLabelsInterface
 {
 
     const MANAGE = 'oRbacManage';
