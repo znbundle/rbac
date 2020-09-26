@@ -2,16 +2,15 @@
 
 namespace ZnBundle\Rbac\Domain\Enums;
 
-use ZnCore\Domain\Base\BaseEnum;
-
-class RbacPermissionEnum extends BaseEnum
+class RbacPermissionEnum
 {
 
     const MANAGE = 'oRbacManage';
-	const AUTHORIZED = '@';
-	const GUEST = '?';
+    const AUTHORIZED = '@';
+    const GUEST = '?';
 
-    public static function getLabels() {
+    public static function getLabels()
+    {
         return [
             self::MANAGE => 'Управление RBAC',
             self::AUTHORIZED => 'Авторизованный',

@@ -2,12 +2,15 @@
 
 namespace ZnBundle\Rbac\Domain\Enums;
 
-use yii2rails\extension\enum\base\BaseEnum;
-
-class ItemTypeEnum extends BaseEnum
+/**
+ * Class ItemTypeEnum
+ * @package ZnBundle\Rbac\Domain\Enums
+ * @deprecated
+ */
+class ItemTypeEnum
 {
 
     const ROLE = 1;
-	const PERMISSION = 2;
+    const PERMISSION = 2;
 
 }
