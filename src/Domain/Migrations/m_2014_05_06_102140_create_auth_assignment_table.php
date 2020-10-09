@@ -10,14 +10,14 @@ class m_2014_05_06_102140_create_auth_assignment_table extends BaseCreateTableMi
 {
 
     protected $tableName = 'auth_assignment';
-    protected $tableComment = '';
+    protected $tableComment = 'Назначение ролей ползователю';
 
     public function tableSchema()
     {
         return function (Blueprint $table) {
-            $table->string('item_name', 64)->comment('');
-            $table->string('user_id', 64)->comment('');
-            $table->integer('created_at')->nullable()->comment('');
+            $table->string('item_name', 64)->comment('Имя роли');
+            $table->string('user_id', 64)->comment('ID пользователя');
+            $table->integer('created_at')->nullable()->comment('Время создания');
 
             $table->primary(['item_name', 'user_id']);
             $table->index('user_id');

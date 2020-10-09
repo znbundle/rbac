@@ -10,13 +10,13 @@ class m_2014_05_06_102130_create_auth_item_child_table extends BaseCreateTableMi
 {
 
     protected $tableName = 'auth_item_child';
-    protected $tableComment = '';
+    protected $tableComment = 'Распределение и наследование полномочий';
 
     public function tableSchema()
     {
         return function (Blueprint $table) {
-            $table->string('parent', 64)->comment('');
-            $table->string('child', 64)->comment('');
+            $table->string('parent', 64)->comment('Родитель');
+            $table->string('child', 64)->comment('Ребенок');
 
             $table->primary(['parent', 'child']);
 
