@@ -8,15 +8,15 @@ class RbacPermissionEnum implements GetLabelsInterface
 {
 
     const MANAGE = 'oRbacManage';
-    const AUTHORIZED = '@';
-    const GUEST = '?';
+    //const AUTHORIZED = '@';
+    //const GUEST = '?';
 
     public static function getLabels()
     {
         return [
             self::MANAGE => 'Управление RBAC',
-            self::AUTHORIZED => 'Авторизованный',
-            self::GUEST => 'Гость',
+            //self::AUTHORIZED => 'Авторизованный',
+            //self::GUEST => 'Гость',
         ];
     }
 

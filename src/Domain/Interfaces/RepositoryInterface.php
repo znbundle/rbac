@@ -217,7 +217,7 @@ interface RepositoryInterface extends CheckAccessInterface
      * @return Assignment[] the assignments indexed by role names. An empty array will be
      * returned if there is no role assigned to the user.
      */
-    public function getAssignments(int $userId): array;
+    public function getAssignments(?int $userId): array;
 
     /**
      * Returns all user IDs assigned to the role specified.

@@ -120,7 +120,7 @@ class DbManager extends BaseManager
         $this->cache = $cache;
     }
 
-    public function checkAccess(int $userId, string $permissionName, array $params = [])
+    public function checkAccess(?int $userId, string $permissionName, array $params = [])
     {
         if (isset($this->checkAccessAssignments[(string)$userId])) {
             $assignments = $this->checkAccessAssignments[(string)$userId];
@@ -449,7 +449,7 @@ class DbManager extends BaseManager
         ]);
     }
 
-    public function getAssignments(int $userId): array
+    public function getAssignments(?int $userId): array
     {
         if ($this->isEmptyUserId($userId)) {
             return [];

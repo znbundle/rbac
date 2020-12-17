@@ -7,6 +7,9 @@
 
 namespace ZnBundle\Rbac\Domain\Services;
 
+use ZnBundle\Rbac\Domain\Enums\RbacPermissionEnum;
+use ZnBundle\Rbac\Domain\Enums\RbacRoleEnum;
+use ZnBundle\User\Domain\Exceptions\UnauthorizedException;
 use ZnCore\Base\Exceptions\InvalidArgumentException;
 use ZnCore\Base\Exceptions\InvalidValueException;
 use ZnCore\Base\Helpers\ClassHelper;
@@ -206,8 +209,16 @@ class ManagerService implements ManagerServiceInterface
         return $this->repository->getAssignment($roleName, $userId);
     }
 
-    public function getAssignments(int $userId): array
+    public function getAssignments(?int $userId): array
     {
+        /*if ($userId == null) {
+            dd($this->repository->getPermissionsByRole('?'));
+            $assignments = [];
+            $assignment = new Assignment();
+            $assignment->roleName = RbacPermissionEnum::GUEST;
+            $assignments[RbacPermissionEnum::GUEST] = $assignment;
+            return $assignments;
+        }*/
         return $this->repository->getAssignments($userId);
     }
 
@@ -241,9 +252,18 @@ class ManagerService implements ManagerServiceInterface
         return $this->repository->removeAllAssignments();
     }
 
-    public function checkAccess(int $userId, string $permissionName, array $params = [])
+    public function checkAccess(?int $userId, string $permissionName, array $params = [])
     {
+        /*$assignments = $this->getAssignments($userId);
+        if(in_array($permissionName, $assignments)) {
+            dd($permissionName);
+        }*/
+        if ($permissionName == RbacRoleEnum::GUEST) {
+            return true;
+        }
+        if ($permissionName == RbacRoleEnum::AUTHORIZED && !empty($userId)) {
+            return true;
+        }
         return $this->repository->checkAccess($userId, $permissionName, $params);
     }
-
 }

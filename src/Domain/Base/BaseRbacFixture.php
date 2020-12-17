@@ -71,17 +71,17 @@ abstract class BaseRbacFixture implements FixtureInterface
         }
     }
 
-    protected function assign(string $roleName, int $userId)
-    {
-        $role = $this->getItem($roleName);
-        $this->authManager->assign($role, $userId);
-    }
-
     protected function addChildren(string $parentName, array $childNames)
     {
         foreach ($childNames as $childName) {
             $this->addChild($parentName, $childName);
         }
+    }
+
+    protected function assign(string $roleName, int $userId)
+    {
+        $role = $this->getItem($roleName);
+        $this->authManager->assign($role, $userId);
     }
 
     protected function addChild(string $parentName, string $childName)
