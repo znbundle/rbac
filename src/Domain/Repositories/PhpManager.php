@@ -98,7 +98,7 @@ class PhpManager extends BaseManager
         $this->load();
     }
 
-    public function checkAccess(int $userId, string $permissionName, array $params = [])
+    public function checkAccess(?int $userId, string $permissionName, array $params = [])
     {
         $assignments = $this->getAssignments($userId);
 
