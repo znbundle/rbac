@@ -30,4 +30,7 @@ class Assignment
      * @var int UNIX timestamp representing the assignment creation time
      */
     public $createdAt;
+
+    /** @var Item */
+    public $role;
 }

@@ -19,6 +19,7 @@ use ZnBundle\Rbac\Domain\Entities\Item;
 use ZnBundle\Rbac\Domain\Entities\Permission;
 use ZnBundle\Rbac\Domain\Entities\Role;
 use ZnBundle\Rbac\Domain\Entities\Rule;
+use ZnCore\Domain\Helpers\EntityHelper;
 
 /**
  * DbManager represents an authorization manager that stores authorization information in database.
@@ -461,11 +462,13 @@ class DbManager extends BaseManager
 
         $assignments = [];
         foreach ($query->all($this->db) as $row) {
-            $assignments[$row['item_name']] = new Assignment([
+            $assignmentEntity = new Assignment();
+            EntityHelper::setAttributes($assignmentEntity, [
                 'userId' => $row['user_id'],
                 'roleName' => $row['item_name'],
                 'createdAt' => $row['created_at'],
             ]);
+            $assignments[$row['item_name']] = $assignmentEntity;
         }
 
         return $assignments;
