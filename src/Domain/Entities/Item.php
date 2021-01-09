@@ -18,6 +18,7 @@ use ZnCore\Base\Legacy\Yii\Helpers\Inflector;
  */
 class Item extends BaseObject
 {
+
     const TYPE_ROLE = 1;
     const TYPE_PERMISSION = 2;
 
