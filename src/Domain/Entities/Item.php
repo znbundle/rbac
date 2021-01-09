@@ -8,6 +8,7 @@
 namespace ZnBundle\Rbac\Domain\Entities;
 
 use ZnCore\Base\Legacy\Yii\Base\BaseObject;
+use ZnCore\Base\Legacy\Yii\Helpers\Inflector;
 
 /**
  * For more details and usage information on Item, see the [guide article on security authorization](guide:security-authorization).
@@ -48,4 +49,13 @@ class Item extends BaseObject
      * @var int UNIX timestamp representing the item updating time
      */
     public $updatedAt;
+
+    public function getTitle(): string
+    {
+        if(empty($this->description)) {
+            $name = mb_substr($this->name, 1);
+            return Inflector::titleize($name);
+        }
+        return $this->description;
+    }
 }
