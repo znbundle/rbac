@@ -11,6 +11,11 @@ use ZnCore\Domain\Libs\Query;
 class RoleRepository extends ItemRepository implements RoleRepositoryInterface
 {
 
+    public function getEntityClass(): string
+    {
+        return RoleEntity::class;
+    }
+
     protected function forgeQuery(Query $query = null)
     {
         $query = parent::forgeQuery($query);

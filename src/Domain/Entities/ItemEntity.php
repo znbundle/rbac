@@ -2,6 +2,7 @@
 
 namespace ZnBundle\Rbac\Domain\Entities;
 
+use Illuminate\Support\Collection;
 use Symfony\Component\Validator\Constraints as Assert;
 use ZnCore\Domain\Interfaces\Entity\EntityIdInterface;
 use ZnCore\Domain\Interfaces\Entity\ValidateEntityInterface;
@@ -9,7 +10,7 @@ use ZnCore\Domain\Interfaces\Entity\ValidateEntityInterface;
 class ItemEntity extends Item implements ValidateEntityInterface, EntityIdInterface
 {
 
-    private $id = null;
+    protected $id = null;
 
     //private $name = null;
 
@@ -25,6 +26,8 @@ class ItemEntity extends Item implements ValidateEntityInterface, EntityIdInterf
 
     //private $updatedAt = null;
 
+    private $children = null;
+
     public function validationRules()
     {
         return [
@@ -34,7 +37,7 @@ class ItemEntity extends Item implements ValidateEntityInterface, EntityIdInterf
             'type' => [
                 new Assert\NotBlank,
             ],
-            'description' => [
+            /*'description' => [
                 new Assert\NotBlank,
             ],
             'ruleName' => [
@@ -48,18 +51,18 @@ class ItemEntity extends Item implements ValidateEntityInterface, EntityIdInterf
             ],
             'updatedAt' => [
                 new Assert\NotBlank,
-            ],
+            ],*/
         ];
     }
 
     public function getId()
     {
-        return $this->name;
+        return $this->id;
     }
 
     public function setId($id): void
     {
-        $this->name = $id;
+        $this->id = $id;
     }
 
     public function setName($value) : void
@@ -130,6 +133,16 @@ class ItemEntity extends Item implements ValidateEntityInterface, EntityIdInterf
     public function getUpdatedAt()
     {
         return $this->updatedAt;
+    }
+
+    public function getChildren(): ?Collection
+    {
+        return $this->children;
+    }
+
+    public function setChildren(Collection $children): void
+    {
+        $this->children = $children;
     }
 }
 

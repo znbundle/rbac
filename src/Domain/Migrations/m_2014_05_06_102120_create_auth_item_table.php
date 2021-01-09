@@ -15,6 +15,7 @@ class m_2014_05_06_102120_create_auth_item_table extends BaseCreateTableMigratio
     public function tableSchema()
     {
         return function (Blueprint $table) {
+            $table->integer('id')->autoIncrement()->comment('Идентификатор');
             $table->string('name', 64)->comment('Имя');
             $table->smallInteger('type')->comment('Тип (полномочие, роль)');
             $table->text('description')->nullable()->comment('Описание');
@@ -23,7 +24,7 @@ class m_2014_05_06_102120_create_auth_item_table extends BaseCreateTableMigratio
             $table->integer('created_at')->nullable()->comment('Время создания');
             $table->integer('updated_at')->nullable()->comment('Время обновления');
 
-            $table->primary('name');
+            $table->unique(['name']);
             $table->index('type');
 
             $table
