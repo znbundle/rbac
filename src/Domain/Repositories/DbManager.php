@@ -142,7 +142,7 @@ class DbManager extends BaseManager
         return $this->checkAccessRecursive($userId, $permissionName, $params, $assignments);
     }
 
-    public function getItem(string $name): Item
+    public function getItem(string $name): ?Item
     {
         if (empty($name)) {
             return null;
@@ -915,7 +915,7 @@ class DbManager extends BaseManager
      * @param Assignment[] $assignments the assignments to the specified user
      * @return bool whether the operations can be performed by the user.
      */
-    protected function checkAccessRecursive($user, $itemName, $params, $assignments)
+    public function checkAccessRecursive($user, $itemName, $params, $assignments)
     {
         if (($item = $this->getItem($itemName)) === null) {
             return false;

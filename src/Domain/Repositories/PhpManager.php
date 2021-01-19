@@ -250,7 +250,7 @@ class PhpManager extends BaseManager
         return false;
     }
 
-    public function getItem(string $name): Item
+    public function getItem(string $name): ?Item
     {
         return isset($this->items[$name]) ? $this->items[$name] : null;
     }

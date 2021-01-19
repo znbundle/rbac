@@ -22,7 +22,7 @@ interface RepositoryInterface extends CheckAccessInterface
      * @param string $name the auth item name.
      * @return Item the auth item corresponding to the specified name. Null is returned if no such item.
      */
-    public function getItem(string $name): Item;
+    public function getItem(string $name): ?Item;
 
     /**
      * Returns the items of the specified type.
