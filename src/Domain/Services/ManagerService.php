@@ -9,7 +9,10 @@ namespace ZnBundle\Rbac\Domain\Services;
 
 use ZnBundle\Rbac\Domain\Enums\RbacPermissionEnum;
 use ZnBundle\Rbac\Domain\Enums\RbacRoleEnum;
+use ZnBundle\User\Domain\Entities\AssignmentEntity;
 use ZnBundle\User\Domain\Exceptions\UnauthorizedException;
+use ZnBundle\User\Domain\Interfaces\Repositories\IdentityRepositoryInterface;
+use ZnBundle\User\Domain\Repositories\Eloquent\AssignmentRepository;
 use ZnCore\Base\Exceptions\InvalidArgumentException;
 use ZnCore\Base\Exceptions\InvalidValueException;
 use ZnCore\Base\Helpers\ClassHelper;
@@ -20,15 +23,21 @@ use ZnBundle\Rbac\Domain\Entities\Role;
 use ZnBundle\Rbac\Domain\Entities\Rule;
 use ZnBundle\Rbac\Domain\Interfaces\ManagerServiceInterface;
 use ZnBundle\Rbac\Domain\Interfaces\RepositoryInterface;
+use ZnCore\Domain\Entities\Query\Where;
+use ZnCore\Domain\Helpers\EntityHelper;
+use ZnCore\Domain\Libs\Query;
+use ZnLib\Telegram\Domain\Facades\Bot;
 
 class ManagerService implements ManagerServiceInterface
 {
 
     private $repository;
+    private $assignmentRepository;
 
-    public function __construct(RepositoryInterface $repository)
+    public function __construct(RepositoryInterface $repository, AssignmentRepository $assignmentRepository)
     {
         $this->repository = $repository;
+        $this->assignmentRepository = $assignmentRepository;
     }
 
     /**
@@ -219,7 +228,19 @@ class ManagerService implements ManagerServiceInterface
             $assignments[RbacPermissionEnum::GUEST] = $assignment;
             return $assignments;
         }*/
-        return $this->repository->getAssignments($userId);
+        $query = new Query();
+        $query->whereNew(new Where('user_id', $userId));
+        $assignmentCollection = $this->assignmentRepository->all($query);
+        $assignments = [];
+        /** @var AssignmentEntity $item */
+        foreach ($assignmentCollection as $item) {
+            $assignment = new Assignment();
+            $assignment->userId = $item->getUserId();
+            $assignment->roleName = $item->getItemName();
+            $assignments[$assignment->roleName] = $assignment;
+        }
+        return $assignments;
+//        return $this->repository->getAssignments($userId);
     }
 
     public function getUserIdsByRole(string $roleName): array
@@ -254,8 +275,8 @@ class ManagerService implements ManagerServiceInterface
 
     public function checkAccess(?int $userId, string $permissionName, array $params = [])
     {
-        /*$assignments = $this->getAssignments($userId);
-        if(in_array($permissionName, $assignments)) {
+        $assignments = $this->getAssignments($userId);
+        /*if(in_array($permissionName, $assignments)) {
             dd($permissionName);
         }*/
         if ($permissionName == RbacRoleEnum::GUEST) {
@@ -264,6 +285,12 @@ class ManagerService implements ManagerServiceInterface
         if ($permissionName == RbacRoleEnum::AUTHORIZED && !empty($userId)) {
             return true;
         }
-        return $this->repository->checkAccess($userId, $permissionName, $params);
+
+        $isAllow = $this->repository->checkAccessRecursive($userId, $permissionName, $params, $assignments);
+
+        return $isAllow;
+//        Bot::dump($rr);
+
+//        return $this->repository->checkAccess($userId, $permissionName, $params);
     }
 }

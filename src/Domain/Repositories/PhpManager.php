@@ -91,7 +91,7 @@ class PhpManager extends BaseManager
      */
     public function init()
     {
-        parent::init();
+//        parent::init();
         $this->itemFile = FileHelper::getAlias($this->itemFile);
         $this->assignmentFile = FileHelper::getAlias($this->assignmentFile);
         $this->ruleFile = FileHelper::getAlias($this->ruleFile);
@@ -764,7 +764,7 @@ class PhpManager extends BaseManager
      * @param Assignment[] $assignments the assignments to the specified user
      * @return bool whether the operations can be performed by the user.
      */
-    protected function checkAccessRecursive($user, $itemName, $params, $assignments)
+    public function checkAccessRecursive($user, $itemName, $params, $assignments)
     {
         if (!isset($this->items[$itemName])) {
             return false;
