@@ -7,28 +7,25 @@
 
 namespace ZnBundle\Rbac\Domain\Services;
 
-use ZnBundle\Rbac\Domain\Enums\RbacPermissionEnum;
-use ZnBundle\Rbac\Domain\Enums\RbacRoleEnum;
-use ZnBundle\User\Domain\Entities\AssignmentEntity;
-use ZnBundle\User\Domain\Exceptions\UnauthorizedException;
-use ZnBundle\User\Domain\Interfaces\Repositories\IdentityRepositoryInterface;
-use ZnBundle\User\Domain\Repositories\Eloquent\AssignmentRepository;
-use ZnCore\Base\Exceptions\InvalidArgumentException;
-use ZnCore\Base\Exceptions\InvalidValueException;
-use ZnCore\Base\Helpers\ClassHelper;
 use ZnBundle\Rbac\Domain\Entities\Assignment;
 use ZnBundle\Rbac\Domain\Entities\Item;
 use ZnBundle\Rbac\Domain\Entities\Permission;
 use ZnBundle\Rbac\Domain\Entities\Role;
 use ZnBundle\Rbac\Domain\Entities\Rule;
+use ZnBundle\Rbac\Domain\Enums\RbacRoleEnum;
+use ZnBundle\Rbac\Domain\Interfaces\CanInterface;
 use ZnBundle\Rbac\Domain\Interfaces\ManagerServiceInterface;
 use ZnBundle\Rbac\Domain\Interfaces\RepositoryInterface;
+use ZnBundle\User\Domain\Entities\AssignmentEntity;
+use ZnBundle\User\Domain\Repositories\Eloquent\AssignmentRepository;
+use ZnCore\Base\Exceptions\ForbiddenException;
+use ZnCore\Base\Exceptions\InvalidArgumentException;
+use ZnCore\Base\Exceptions\InvalidValueException;
+use ZnCore\Base\Helpers\ClassHelper;
 use ZnCore\Domain\Entities\Query\Where;
-use ZnCore\Domain\Helpers\EntityHelper;
 use ZnCore\Domain\Libs\Query;
-use ZnLib\Telegram\Domain\Facades\Bot;
 
-class ManagerService implements ManagerServiceInterface
+class ManagerService implements ManagerServiceInterface, CanInterface
 {
 
     private $repository;
@@ -271,6 +268,25 @@ class ManagerService implements ManagerServiceInterface
     public function removeAllAssignments()
     {
         return $this->repository->removeAllAssignments();
+    }
+
+    public function isCan(?int $userId, array $permissions, array $params = []): bool
+    {
+        foreach ($permissions as $permission) {
+            $isCan = $this->checkAccess($userId, $permission);
+            if (!$isCan) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public function can(?int $userId, array $permissions, array $params = []): void
+    {
+        $isCan = $this->isCan($userId, $permissions);
+        if (!$isCan) {
+            throw new ForbiddenException('Forbidden');
+        }
     }
 
     public function checkAccess(?int $userId, string $permissionName, array $params = [])
