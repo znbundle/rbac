@@ -4,10 +4,11 @@ namespace ZnBundle\Rbac\Domain\Entities;
 
 use Illuminate\Support\Collection;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 use ZnCore\Domain\Interfaces\Entity\EntityIdInterface;
-use ZnCore\Domain\Interfaces\Entity\ValidateEntityInterface;
+use ZnCore\Domain\Interfaces\Entity\ValidateEntityByMetadataInterface;
 
-class ItemEntity extends Item implements ValidateEntityInterface, EntityIdInterface
+class ItemEntity extends Item implements ValidateEntityByMetadataInterface, EntityIdInterface
 {
 
     protected $id = null;
@@ -28,31 +29,10 @@ class ItemEntity extends Item implements ValidateEntityInterface, EntityIdInterf
 
     private $children = null;
 
-    public function validationRules()
+    public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
-        return [
-            'name' => [
-                new Assert\NotBlank,
-            ],
-            'type' => [
-                new Assert\NotBlank,
-            ],
-            /*'description' => [
-                new Assert\NotBlank,
-            ],
-            'ruleName' => [
-                new Assert\NotBlank,
-            ],
-            'data' => [
-                new Assert\NotBlank,
-            ],
-            'createdAt' => [
-                new Assert\NotBlank,
-            ],
-            'updatedAt' => [
-                new Assert\NotBlank,
-            ],*/
-        ];
+        $metadata->addPropertyConstraint('name', new Assert\NotBlank);
+        $metadata->addPropertyConstraint('type', new Assert\NotBlank);
     }
 
     public function getId()
