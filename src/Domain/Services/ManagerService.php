@@ -24,16 +24,18 @@ use ZnCore\Base\Exceptions\InvalidValueException;
 use ZnCore\Base\Helpers\ClassHelper;
 use ZnCore\Domain\Entities\Query\Where;
 use ZnCore\Domain\Libs\Query;
+use ZnCore\Domain\Traits\RepositoryAwareTrait;
 
 class ManagerService implements ManagerServiceInterface, CanInterface
 {
 
-    private $repository;
+    use RepositoryAwareTrait;
+
     private $assignmentRepository;
 
     public function __construct(RepositoryInterface $repository, AssignmentRepository $assignmentRepository)
     {
-        $this->repository = $repository;
+        $this->setRepository($repository);
         $this->assignmentRepository = $assignmentRepository;
     }
 
@@ -46,12 +48,12 @@ class ManagerService implements ManagerServiceInterface, CanInterface
      */
     public function setDefaultRoles($roles)
     {
-        $this->repository->setDefaultRoles($roles);
+        $this->getRepository()->setDefaultRoles($roles);
     }
 
     public function getDefaultRoles()
     {
-        return $this->repository->getDefaultRoles();
+        return $this->getRepository()->getDefaultRoles();
     }
 
     public function createRole(string $name): Role
@@ -74,12 +76,12 @@ class ManagerService implements ManagerServiceInterface, CanInterface
             if ($object->ruleName && $this->getRule($object->ruleName) === null) {
                 $rule = ClassHelper::createObject($object->ruleName);
                 $rule->name = $object->ruleName;
-                $this->repository->addRule($rule);
+                $this->getRepository()->addRule($rule);
             }
 
-            return $this->repository->addItem($object);
+            return $this->getRepository()->addItem($object);
         } elseif ($object instanceof Rule) {
-            return $this->repository->addRule($object);
+            return $this->getRepository()->addRule($object);
         }
 
         throw new InvalidArgumentException('Adding unsupported object type.');
@@ -88,9 +90,9 @@ class ManagerService implements ManagerServiceInterface, CanInterface
     public function remove(Item $object): bool
     {
         if ($object instanceof Item) {
-            return $this->repository->removeItem($object);
+            return $this->getRepository()->removeItem($object);
         } elseif ($object instanceof Rule) {
-            return $this->repository->removeRule($object);
+            return $this->getRepository()->removeRule($object);
         }
 
         throw new InvalidArgumentException('Removing unsupported object type.');
@@ -102,12 +104,12 @@ class ManagerService implements ManagerServiceInterface, CanInterface
             if ($object->ruleName && $this->getRule($object->ruleName) === null) {
                 $rule = ClassHelper::createObject($object->ruleName);
                 $rule->name = $object->ruleName;
-                $this->repository->addRule($rule);
+                $this->getRepository()->addRule($rule);
             }
 
-            return $this->repository->updateItem($name, $object);
+            return $this->getRepository()->updateItem($name, $object);
         } elseif ($object instanceof Rule) {
-            return $this->repository->updateRule($name, $object);
+            return $this->getRepository()->updateRule($name, $object);
         }
 
         throw new InvalidArgumentException('Updating unsupported object type.');
@@ -115,110 +117,110 @@ class ManagerService implements ManagerServiceInterface, CanInterface
 
     public function getRole(string $name): ?Role
     {
-        $item = $this->repository->getItem($name);
+        $item = $this->getRepository()->getItem($name);
         return $item instanceof Item && $item->type == Item::TYPE_ROLE ? $item : null;
     }
 
     public function getPermission(string $name): ?Permission
     {
-        $item = $this->repository->getItem($name);
+        $item = $this->getRepository()->getItem($name);
         return $item instanceof Item && $item->type == Item::TYPE_PERMISSION ? $item : null;
     }
 
     public function getPermissions(): array
     {
-        return $this->repository->getItems(Item::TYPE_PERMISSION);
+        return $this->getRepository()->getItems(Item::TYPE_PERMISSION);
     }
 
     public function getRoles(): array
     {
-        return $this->repository->getItems(Item::TYPE_ROLE);
+        return $this->getRepository()->getItems(Item::TYPE_ROLE);
     }
 
     public function getRolesByUser(int $userId): array
     {
-        return $this->repository->getRolesByUser($userId);
+        return $this->getRepository()->getRolesByUser($userId);
     }
 
     public function getChildRoles(string $roleName): array
     {
-        return $this->repository->getChildRoles($roleName);
+        return $this->getRepository()->getChildRoles($roleName);
     }
 
     public function getPermissionsByRole(string $roleName): array
     {
-        return $this->repository->getPermissionsByRole($roleName);
+        return $this->getRepository()->getPermissionsByRole($roleName);
     }
 
     public function getPermissionsByUser(int $userId): array
     {
-        return $this->repository->getPermissionsByUser($userId);
+        return $this->getRepository()->getPermissionsByUser($userId);
     }
 
     public function getRule(string $name): ?Rule
     {
-        return $this->repository->getRule($name);
+        return $this->getRepository()->getRule($name);
     }
 
     public function getRules(): array
     {
-        return $this->repository->getRules();
+        return $this->getRepository()->getRules();
     }
 
     public function canAddChild(Item $parent, Item $child): bool
     {
-        return $this->repository->canAddChild($parent, $child);
+        return $this->getRepository()->canAddChild($parent, $child);
     }
 
     public function addChild(Item $parent, Item $child): bool
     {
-        return $this->repository->addChild($parent, $child);
+        return $this->getRepository()->addChild($parent, $child);
     }
 
     public function removeChild(Item $parent, Item $child): bool
     {
-        return $this->repository->removeChild($parent, $child);
+        return $this->getRepository()->removeChild($parent, $child);
     }
 
     public function removeChildren(Item $parent): bool
     {
-        return $this->repository->removeChildren($parent);
+        return $this->getRepository()->removeChildren($parent);
     }
 
     public function hasChild(Item $parent, Item $child): bool
     {
-        return $this->repository->hasChild($parent, $child);
+        return $this->getRepository()->hasChild($parent, $child);
     }
 
     public function getChildren(string $name): array
     {
-        return $this->repository->getChildren($name);
+        return $this->getRepository()->getChildren($name);
     }
 
     public function assign(Item $role, int $userId): Assignment
     {
-        return $this->repository->assign($role, $userId);
+        return $this->getRepository()->assign($role, $userId);
     }
 
     public function revoke(Item $role, int $userId): bool
     {
-        return $this->repository->revoke($role, $userId);
+        return $this->getRepository()->revoke($role, $userId);
     }
 
     public function revokeAll($userId): bool
     {
-        return $this->repository->revokeAll($userId);
+        return $this->getRepository()->revokeAll($userId);
     }
 
     public function getAssignment(string $roleName, int $userId): ?Assignment
     {
-        return $this->repository->getAssignment($roleName, $userId);
+        return $this->getRepository()->getAssignment($roleName, $userId);
     }
 
     public function getAssignments(?int $userId): array
     {
         /*if ($userId == null) {
-            dd($this->repository->getPermissionsByRole('?'));
+            dd($this->getRepository()->getPermissionsByRole('?'));
             $assignments = [];
             $assignment = new Assignment();
             $assignment->roleName = RbacPermissionEnum::GUEST;
@@ -237,37 +239,37 @@ class ManagerService implements ManagerServiceInterface, CanInterface
             $assignments[$assignment->roleName] = $assignment;
         }
         return $assignments;
-//        return $this->repository->getAssignments($userId);
+//        return $this->getRepository()->getAssignments($userId);
     }
 
     public function getUserIdsByRole(string $roleName): array
     {
-        return $this->repository->getUserIdsByRole($roleName);
+        return $this->getRepository()->getUserIdsByRole($roleName);
     }
 
     public function removeAll()
     {
-        return $this->repository->removeAll();
+        return $this->getRepository()->removeAll();
     }
 
     public function removeAllPermissions()
     {
-        return $this->repository->removeAllPermissions();
+        return $this->getRepository()->removeAllPermissions();
     }
 
     public function removeAllRoles()
     {
-        return $this->repository->removeAllRoles();
+        return $this->getRepository()->removeAllRoles();
     }
 
     public function removeAllRules()
     {
-        return $this->repository->removeAllRules();
+        return $this->getRepository()->removeAllRules();
     }
 
     public function removeAllAssignments()
     {
-        return $this->repository->removeAllAssignments();
+        return $this->getRepository()->removeAllAssignments();
     }
 
     public function isCan(?int $userId, array $permissions, array $params = []): bool
@@ -302,11 +304,11 @@ class ManagerService implements ManagerServiceInterface, CanInterface
             return true;
         }
 
-        $isAllow = $this->repository->checkAccessRecursive($userId, $permissionName, $params, $assignments);
+        $isAllow = $this->getRepository()->checkAccessRecursive($userId, $permissionName, $params, $assignments);
 
         return $isAllow;
 //        Bot::dump($rr);
 
-//        return $this->repository->checkAccess($userId, $permissionName, $params);
+//        return $this->getRepository()->checkAccess($userId, $permissionName, $params);
     }
 }

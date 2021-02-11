@@ -17,7 +17,7 @@ class RoleService extends ItemService implements RoleServiceInterface
 
     public function __construct(RoleRepositoryInterface $repository, ManagerServiceInterface $managerService)
     {
-        $this->repository = $repository;
+        $this->setRepository($repository);
         $this->managerService = $managerService;
     }
 
@@ -29,6 +29,6 @@ class RoleService extends ItemService implements RoleServiceInterface
 
     public function oneByName(string $name, Query $query = null)
     {
-        return $this->repository->oneByName($name, $query);
+        return $this->getRepository()->oneByName($name, $query);
     }
 }

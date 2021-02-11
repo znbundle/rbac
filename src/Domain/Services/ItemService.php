@@ -15,7 +15,7 @@ class ItemService extends BaseCrudService implements ItemServiceInterface
 
     public function __construct(ItemRepositoryInterface $repository, ManagerServiceInterface $managerService)
     {
-        $this->repository = $repository;
+        $this->setRepository($repository);
         $this->managerService = $managerService;
     }
 
