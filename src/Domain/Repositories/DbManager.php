@@ -7,8 +7,10 @@
 
 namespace ZnBundle\Rbac\Domain\Repositories;
 
+use Symfony\Component\Cache\Adapter\AbstractAdapter;
+use Symfony\Component\Cache\CacheItem;
+use Symfony\Contracts\Cache\CacheInterface;
 use Yii;
-use yii\caching\CacheInterface;
 use yii\db\Connection;
 use yii\db\Expression;
 use yii\db\Query;
@@ -67,7 +69,7 @@ class DbManager extends BaseManager
      */
     public $ruleTable = '{{%auth_rule}}';
     /**
-     * @var CacheInterface|array|string the cache used to improve RBAC performance. This can be one of the following:
+     * @var CacheInterface|AbstractAdapter the cache used to improve RBAC performance. This can be one of the following:
      *
      * - an application component ID (e.g. `cache`)
      * - a configuration array
@@ -119,6 +121,16 @@ class DbManager extends BaseManager
     {
         $this->db = $connection;
         $this->cache = $cache;
+        //dd($cache);
+    }
+
+    public function checkAccessByAssignments(?int $userId, string $permissionName, array $params = [], array $assignments)
+    {
+        $this->loadFromCache();
+        if ($this->items !== null) {
+            return $this->checkAccessFromCache($userId, $permissionName, $params, $assignments);
+        }
+        return $this->checkAccessRecursive($userId, $permissionName, $params, $assignments);
     }
 
     public function checkAccess(?int $userId, string $permissionName, array $params = [])
@@ -645,7 +657,11 @@ class DbManager extends BaseManager
             return;
         }
 
-        $data = $this->cache->get($this->cacheKey);
+        /** @var CacheItem $item */
+        $item = $this->cache->getItem($this->cacheKey);
+        $data = $item->get();
+
+        //$data = $this->cache->get($this->cacheKey);
         if (is_array($data) && isset($data[0], $data[1], $data[2])) {
             list($this->items, $this->rules, $this->parents) = $data;
             return;
@@ -675,7 +691,13 @@ class DbManager extends BaseManager
             }
         }
 
-        $this->cache->set($this->cacheKey, [$this->items, $this->rules, $this->parents]);
+        /** @var CacheItem $item */
+        $item = $this->cache->getItem($this->cacheKey);
+//        dd($item);
+        $item->set([$this->items, $this->rules, $this->parents]);
+        $this->cache->save($item);
+
+        //$this->cache->set($this->cacheKey, [$this->items, $this->rules, $this->parents]);
     }
 
     public function getUserIdsByRole(string $roleName): array

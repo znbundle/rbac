@@ -303,10 +303,15 @@ class ManagerService implements ManagerServiceInterface, CanInterface
         if ($permissionName == RbacRoleEnum::AUTHORIZED && !empty($userId)) {
             return true;
         }
-
-        $isAllow = $this->getRepository()->checkAccessRecursive($userId, $permissionName, $params, $assignments);
-
+        $isAllow = $this->getRepository()->checkAccessByAssignments($userId, $permissionName, $params, $assignments);
         return $isAllow;
+
+
+
+
+//        $isAllow = $this->getRepository()->checkAccessFromCache($userId, $permissionName, $params, $assignments);
+//        return $isAllow;
+
 //        Bot::dump($rr);
 
 //        return $this->getRepository()->checkAccess($userId, $permissionName, $params);
