@@ -3,9 +3,9 @@
 namespace ZnBundle\Rbac\Domain\Repositories\Eloquent;
 
 use Illuminate\Support\Collection;
-use Packages\Eav\Domain\Entities\EntityAttributeEntity;
-use Packages\Eav\Domain\Entities\EntityEntity;
-use Packages\Eav\Domain\Interfaces\Repositories\EntityAttributeRepositoryInterface;
+use ZnBundle\Eav\Domain\Entities\EntityAttributeEntity;
+use ZnBundle\Eav\Domain\Entities\EntityEntity;
+use ZnBundle\Eav\Domain\Interfaces\Repositories\EntityAttributeRepositoryInterface;
 use ZnBundle\Rbac\Domain\Entities\ItemEntity;
 use ZnCore\Domain\Interfaces\Entity\EntityIdInterface;
 use ZnCore\Domain\Relations\relations\OneToManyRelation;
