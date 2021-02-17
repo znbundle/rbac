@@ -17,6 +17,7 @@ use ZnBundle\Rbac\Domain\Interfaces\CanInterface;
 use ZnBundle\Rbac\Domain\Interfaces\ManagerServiceInterface;
 use ZnBundle\Rbac\Domain\Interfaces\RepositoryInterface;
 use ZnBundle\User\Domain\Entities\AssignmentEntity;
+use ZnBundle\User\Domain\Interfaces\Services\AuthServiceInterface;
 use ZnBundle\User\Domain\Repositories\Eloquent\AssignmentRepository;
 use ZnCore\Base\Exceptions\ForbiddenException;
 use ZnCore\Base\Exceptions\InvalidArgumentException;
@@ -32,11 +33,17 @@ class ManagerService implements ManagerServiceInterface, CanInterface
     use RepositoryAwareTrait;
 
     private $assignmentRepository;
+    private $authService;
 
-    public function __construct(RepositoryInterface $repository, AssignmentRepository $assignmentRepository)
+    public function __construct(
+        RepositoryInterface $repository, 
+        AssignmentRepository $assignmentRepository,
+        AuthServiceInterface $authService
+    )
     {
         $this->setRepository($repository);
         $this->assignmentRepository = $assignmentRepository;
+        $this->authService = $authService;
     }
 
     /**
@@ -272,6 +279,12 @@ class ManagerService implements ManagerServiceInterface, CanInterface
         return $this->getRepository()->removeAllAssignments();
     }
 
+    public function isICan(array $permissions, array $params = []): bool
+    {
+        $userId = $this->authService->getIdentity()->getId();
+        return $this->isCan($userId, $permissions, $params);
+    }
+    
     public function isCan(?int $userId, array $permissions, array $params = []): bool
     {
         foreach ($permissions as $permission) {
