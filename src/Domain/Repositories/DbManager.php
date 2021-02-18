@@ -948,7 +948,6 @@ class DbManager extends BaseManager
         if (!$this->executeRule($user, $item, $params)) {
             return false;
         }
-
         if (isset($assignments[$itemName]) || in_array($itemName, $this->defaultRoles)) {
             return true;
         }

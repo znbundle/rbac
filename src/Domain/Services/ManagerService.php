@@ -281,7 +281,11 @@ class ManagerService implements ManagerServiceInterface, CanInterface
 
     public function isICan(array $permissions, array $params = []): bool
     {
-        $userId = $this->authService->getIdentity()->getId();
+        if($this->authService->isGuest()) {
+            $userId = null;
+        } else {
+            $userId = $this->authService->getIdentity()->getId();
+        }
         return $this->isCan($userId, $permissions, $params);
     }
     
